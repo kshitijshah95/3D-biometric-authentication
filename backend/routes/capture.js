@@ -82,6 +82,11 @@ class Subject{
         for(let i = 0; i < categories.length; i++){
             if(i === 1 && !this.glasses) continue;
             for(let category of categories[i]){
+                console.log(category[3] + " and hair is " + this.hairOcclusion);
+                if(category[3] == 'hair' && !this.hairOcclusion) {
+                    console.log("Ignoring");
+                    continue;
+                }
                 let path = category.join('/');
                 var dir = `./dataset/subject-${this.id}/${path}`;
                 // Create Folder Structure
@@ -90,10 +95,10 @@ class Subject{
                   })
             }
         }
-        // resolve(subjectID);
     }
 }
 
+// Get previous subject's data from the Database
 router.route('/start').get((req, res) => {
     subjectDataModel.find().sort({ _id: -1 }).limit(1).exec((err, subject) => {
         if(err) res.send("Error is " + err);
@@ -104,23 +109,25 @@ router.route('/start').get((req, res) => {
     });
 });
 
-router.route('/start/:id').post((req, res) => {
+
+// Create New Subject, Create Folder Structure and Store in Database
+router.route('/start').post((req, res) => {
     // Retrieve last glasses and False from the UI
-    let glasses = false;
-    let hairOcclusion = false;
     let subjectID = req.body.id;
-    // create new Subject
-    let subject = new Subject(subjectID, glasses, hairOcclusion);    
+    let glasses = req.body.glasses;
+    let hairOcclusion = req.body.hairOcclusion;
+    console.log("Glasses = " + glasses);
+    console.log("hair = " + hairOcclusion);
+
+    // Create new Subject, Create Folder Structure 
+    let subject = new Subject(subjectID, glasses, hairOcclusion);
+
+    // Store Subject Info in Database
+    let newSubject = new subjectDataModel({subjectID: subjectID});
+    newSubject.save()
+    .then(() => res.json('Subject added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
-
-
-
-// Capture
-// router.route('/Capture').get((req, res) => {
-//   Exercise.find()
-//     .then(exercises => res.json(exercises))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
 
 
 module.exports = router;
