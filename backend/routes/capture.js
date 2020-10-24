@@ -1,6 +1,8 @@
 const router = require('express').Router();
-var fs = require('fs');
-let subjectDataModel = require('../models/subject.model');
+const fs = require('fs');
+const { resolve } = require('path');
+const { callbackify } = require('util');
+const subjectDataModel = require('../models/subject.model');
 
 const categories = [
     [
@@ -69,63 +71,50 @@ const categories = [
 ];
 
 class Subject{
-    constructor(glasses = false, hairOcclusion = false){
-        this.id = this.getSubjectID() + 1;
+    constructor(subjectID, glasses = false, hairOcclusion = false){
+        this.id = subjectID;
         this.glasses = glasses;
         this.hairOcclusion = hairOcclusion;
+        this.createFolderStructure();
     }
 
-    getSubjectID = () => {
-        // DB Logic
-        
-        return 0;
-    }
-
-
-    createFolderStructure = (subject) => {
+    createFolderStructure = () => {
         for(let i = 0; i < categories.length; i++){
-            if(i === 1 && !subject.glasses) continue;
+            if(i === 1 && !this.glasses) continue;
             for(let category of categories[i]){
                 let path = category.join('/');
-                var dir = `./dataset/subject-${subject.id}/${path}`;
+                var dir = `./dataset/subject-${this.id}/${path}`;
                 // Create Folder Structure
                 fs.mkdir(dir, {recursive:true}, (err)=>{
                     if (err) console.log(`Error creating directory: ${err}`)
                   })
             }
         }
+        // resolve(subjectID);
     }
 }
 
-
 router.route('/start').get((req, res) => {
-    // Retrieve last subjectID from the DataBase
+    subjectDataModel.find().sort({ _id: -1 }).limit(1).exec((err, subject) => {
+        if(err) res.send("Error is " + err);
+        else {
+            let subjectID = Number(subject[0].subjectID) + 1;
+            res.send("ID is " + subjectID);
+        };
+    });
+});
+
+router.route('/start/:id').post((req, res) => {
+    // Retrieve last glasses and False from the UI
     let glasses = false;
     let hairOcclusion = false;
-
+    let subjectID = req.body.id;
     // create new Subject
-    let subject = new Subject(glasses, hairOcclusion);
-
-    // Create Folder Structure
-    createFolderStructure(subject);
-
-    res.send('OK');
+    let subject = new Subject(subjectID, glasses, hairOcclusion);    
 });
 
 
-function createFolderStructure(subject){
-    for(let i = 0; i < categories.length; i++){
-        if(i === 1 && !subject.glasses) continue;
-        for(let category of categories[i]){
-            let path = category.join('/');
-            var dir = `./dataset/subject-${subject.id}/${path}`;
-            // Create Folder Structure
-            fs.mkdir(dir, {recursive:true}, (err)=>{
-                if (err) console.log(`Error creating directory: ${err}`)
-              })
-        }
-    }
-}
+
 // Capture
 // router.route('/Capture').get((req, res) => {
 //   Exercise.find()
