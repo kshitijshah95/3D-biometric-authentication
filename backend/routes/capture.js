@@ -82,11 +82,7 @@ class Subject{
         for(let i = 0; i < categories.length; i++){
             if(i === 1 && !this.glasses) continue;
             for(let category of categories[i]){
-                console.log(category[3] + " and hair is " + this.hairOcclusion);
-                if(category[3] == 'hair' && !this.hairOcclusion) {
-                    console.log("Ignoring");
-                    continue;
-                }
+                if(category[3] == 'hair' && !this.hairOcclusion) continue;
                 let path = category.join('/');
                 var dir = `./dataset/subject-${this.id}/${path}`;
                 // Create Folder Structure
