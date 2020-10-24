@@ -1,16 +1,17 @@
 const router = require('express').Router();
-let Subject = require('../models/subject.model');
+var fs = require('fs');
+let subjectDataModel = require('../models/subject.model');
 
-let categories = [
-    // Face
+const categories = [
     [
+        // Face
         [['face'], ['lighting'], ['normal']],
         [['face'], ['lighting'], ['dimmed']],
         [['face'], ['lighting'], ['dark']],
         [['face'], ['lighting'], ['bright']],
         [['face'], ['expressions'], ['happy']],
         [['face'], ['expressions'], ['sad']],
-        [['face'], ['expression'], ['disgusted']],
+        [['face'], ['expressions'], ['disgusted']],
         [['face'], ['expressions'], ['angry']],
         [['face'], ['expressions'], ['scared']],
         [['face'], ['camera_angle'], ['slightly_left']],
@@ -23,7 +24,7 @@ let categories = [
         // Glasses
         [['face'], ['glasses'], ['expressions'], ['happy']],
         [['face'], ['glasses'], ['expressions'], ['sad']],
-        [['face'], ['glasses'], ['expression'], ['disgusted']],
+        [['face'], ['glasses'], ['expressions'], ['disgusted']],
         [['face'], ['glasses'], ['expressions'], ['angry']],
         [['face'], ['glasses'], ['expressions'], ['scared']],
         [['face'], ['glasses'], ['camera_angle'], ['slightly_left']],
@@ -67,11 +68,70 @@ let categories = [
     ]
 ];
 
+class Subject{
+    constructor(glasses = false, hairOcclusion = false){
+        this.id = this.getSubjectID() + 1;
+        this.glasses = glasses;
+        this.hairOcclusion = hairOcclusion;
+    }
 
-router.route('/').get((req, res) => {
-  Exercise.find()
-    .then(exercises => res.json(exercises))
-    .catch(err => res.status(400).json('Error: ' + err));
+    getSubjectID = () => {
+        // DB Logic
+        
+        return 0;
+    }
+
+
+    createFolderStructure = (subject) => {
+        for(let i = 0; i < categories.length; i++){
+            if(i === 1 && !subject.glasses) continue;
+            for(let category of categories[i]){
+                let path = category.join('/');
+                var dir = `./dataset/subject-${subject.id}/${path}`;
+                // Create Folder Structure
+                fs.mkdir(dir, {recursive:true}, (err)=>{
+                    if (err) console.log(`Error creating directory: ${err}`)
+                  })
+            }
+        }
+    }
+}
+
+
+router.route('/start').get((req, res) => {
+    // Retrieve last subjectID from the DataBase
+    let glasses = false;
+    let hairOcclusion = false;
+
+    // create new Subject
+    let subject = new Subject(glasses, hairOcclusion);
+
+    // Create Folder Structure
+    createFolderStructure(subject);
+
+    res.send('OK');
 });
+
+
+function createFolderStructure(subject){
+    for(let i = 0; i < categories.length; i++){
+        if(i === 1 && !subject.glasses) continue;
+        for(let category of categories[i]){
+            let path = category.join('/');
+            var dir = `./dataset/subject-${subject.id}/${path}`;
+            // Create Folder Structure
+            fs.mkdir(dir, {recursive:true}, (err)=>{
+                if (err) console.log(`Error creating directory: ${err}`)
+              })
+        }
+    }
+}
+// Capture
+// router.route('/Capture').get((req, res) => {
+//   Exercise.find()
+//     .then(exercises => res.json(exercises))
+//     .catch(err => res.status(400).json('Error: ' + err));
+// });
+
 
 module.exports = router;

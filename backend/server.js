@@ -25,7 +25,7 @@ const captureRouter = require('./routes/capture');
 
 // app.use('/exercises', exercisesRouter);
 // app.use('/users', usersRouter);
-app.use('/capture', usersRouter);
+app.use('/', captureRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
