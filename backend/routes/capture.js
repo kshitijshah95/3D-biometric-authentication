@@ -67,6 +67,9 @@ const categories = [
         [['ear'], ['right'], ['camera_angle'], ['slighlty_right']],
         [['ear'], ['right'], ['camera_angle'], ['very_right']],
         [['ear'], ['right'], ['camera_angle'], ['center']],
+    ],
+    [
+        [['soft']]
     ]
 ];
 
@@ -93,6 +96,12 @@ class Subject{
         }
     }
 }
+
+// Display Welcome Screen
+router.route('/').get((req, res) => {});
+
+// Collect Form Data
+router.route('/').post((req, res) => {});
 
 // Get previous subject's data from the Database
 router.route('/start').get((req, res) => {
