@@ -100,7 +100,7 @@ class Subject{
                 if(category[3] == 'hair' && !this.hairOcclusion) continue;
                 
                 let path = category.join('/');
-                var dir = `./dataset/subject-${this.id}/${path}`;
+                var dir = `./dataset/subject${this.id}/${path}`;
                 // Create Folder Structure
                 fs.mkdir(dir, {recursive:true}, (err)=>{
                     if (err) console.log(`Error creating directory: ${err}`)
@@ -114,7 +114,8 @@ class Subject{
 let subject;
 let currentCategory = [0,13];
 let imageNumber  = 0;
-let currentFilename = '';
+let currentFileName = '';
+let currentFilePath = '';
 
 // Get previous subject's data from the Database
 router.route('/start').get((req, res) => {
@@ -176,23 +177,39 @@ function getCurrentFileName(){
     }
     
     imageNumber += 1;
-    currentFilename = categories[currentCategory[0]][currentCategory[1]].join('-') + '-' + imageNumber;
+    currentFileName = `subject${subject.id}_${categories[currentCategory[0]][currentCategory[1]].join('_')}_${imageNumber}`;
+
+    currentFilePath = `subject${subject.id}/${categories[currentCategory[0]][currentCategory[1]].join('/')}`;
     
-    return currentFilename;
+    return [currentFilePath, currentFileName];
         
 }
 
+function saveToJSON(filePath, fileName){
+    let paths = {
+        filePath: filePath,
+        fileName: fileName
+    }
+
+    fs.writeFile('pathsData.json', paths, (err) => {
+        if (err) throw err;
+        console.log('Data written to file');
+    });
+
+}
+
 router.route('/capture').get((req, res) => {
-    let ress = getCurrentFileName();
+    let fileName = getCurrentFileName();
+    let filePath = getCurrentFilePath();
     
     if(res === "Completed"){
-        res.send(ress);
+        res.send(fileName);
     }
     else{
-        res.send(ress);
+        res.send(fileName);
 
         // Store FileName in JSON
-        
+        saveToJSON(filePath, fileName)
 
         // Execute exe
     }
