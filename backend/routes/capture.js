@@ -67,9 +67,6 @@ const categories = [
         [['ear'], ['right'], ['camera_angle'], ['slighlty_right']],
         [['ear'], ['right'], ['camera_angle'], ['very_right']],
         [['ear'], ['right'], ['camera_angle'], ['center']],
-    ],
-    [
-        [['soft']]
     ]
 ];
 
@@ -152,7 +149,7 @@ router.route('/start').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/capture').get((req, res) => {
+function getCurrentFileName(){
     let modality = currentCategory[0];
     let category = currentCategory[1];
     
@@ -160,22 +157,46 @@ router.route('/capture').get((req, res) => {
         // Update Category
         imageNumber = 0;
         if(category < categories[modality].length - 1){
+            
+            // If not HairOcclusion
+            if(modality > 1 && category == 6 && !subject.hairOcclusion) category += 1;
             // Same Modality, Next Category
             currentCategory = [modality, category + 1];
         } else {
+
+            // No Glasses
+            if(modality == 0 && !subject.glasses) modality += 1;
+
             // Next Modality
             currentCategory = [modality + 1, 0];
         }
     }
+    else if(imageNumber >= 5 && modality == categories.length - 1){
+        return "Completed";
+    }
+    
     imageNumber += 1;
     currentFilename = categories[currentCategory[0]][currentCategory[1]].join('-') + '-' + imageNumber;
     
-    res.send(currentFilename);
-    // Capture Image for same Category for Image 0
-    
-    // Execute exe to Save Image for Category
+    return currentFilename;
+        
+}
 
-    // Get Current Category
+router.route('/capture').get((req, res) => {
+    let ress = getCurrentFileName();
+    
+    if(res === "Completed"){
+        res.send(ress);
+    }
+    else{
+        res.send(ress);
+
+        // Store FileName in JSON
+        
+
+        // Execute exe
+    }
+
 });
 
 
