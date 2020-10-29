@@ -112,7 +112,7 @@ class Subject{
 
 
 let subject;
-let currentCategory = [0,13];
+let currentCategory = [0,0];
 let imageNumber  = 0;
 let currentFileName = '';
 let currentFilePath = '';
@@ -186,12 +186,12 @@ function getCurrentFileName(){
 }
 
 function saveToJSON(filePath, fileName){
-    let paths = {
+    let paths = JSON.stringify({
         filePath: filePath,
         fileName: fileName
-    }
+    });
 
-    fs.writeFile('pathsData.json', paths, (err) => {
+    fs.writeFile('mynteyed_demo/mynteyed_demo/image-data.json', paths, (err) => {
         if (err) throw err;
         console.log('Data written to file');
     });
@@ -199,8 +199,8 @@ function saveToJSON(filePath, fileName){
 }
 
 router.route('/capture').get((req, res) => {
-    let fileName = getCurrentFileName();
-    let filePath = getCurrentFilePath();
+    let [filePath, fileName] = getCurrentFileName();
+    // let filePath = getCurrentFilePath();
     
     if(res === "Completed"){
         res.send(fileName);
