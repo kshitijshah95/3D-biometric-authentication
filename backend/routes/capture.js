@@ -95,16 +95,36 @@ class Subject{
             }
         }
     }
+
+    captureImage = () => {
+        for(let i = 0; i < categories.length; i++){
+            if(i === 1 && !this.glasses) continue;
+            for(let category of categories[i]){
+                if(category[3] == 'hair' && !this.hairOcclusion) continue;
+                
+                let path = category.join('/');
+                var dir = `./dataset/subject-${this.id}/${path}`;
+                // Create Folder Structure
+                fs.mkdir(dir, {recursive:true}, (err)=>{
+                    if (err) console.log(`Error creating directory: ${err}`)
+                  })
+            }
+        }
+    }
 }
 
-// Display Welcome Screen
-router.route('/').get((req, res) => {});
 
-// Collect Form Data
-router.route('/').post((req, res) => {});
+let subject;
+let currentCategory = [0,13];
+let imageNumber  = 0;
+let currentFilename = '';
 
 // Get previous subject's data from the Database
 router.route('/start').get((req, res) => {
+    currentCategory;
+    imageNumber = 0;
+    currentFilename = '';
+
     subjectDataModel.find().sort({ _id: -1 }).limit(1).exec((err, subject) => {
         if(err) res.send("Error is " + err);
         else {
@@ -121,17 +141,41 @@ router.route('/start').post((req, res) => {
     let subjectID = req.body.id;
     let glasses = req.body.glasses;
     let hairOcclusion = req.body.hairOcclusion;
-    console.log("Glasses = " + glasses);
-    console.log("hair = " + hairOcclusion);
-
+    
     // Create new Subject, Create Folder Structure 
-    let subject = new Subject(subjectID, glasses, hairOcclusion);
+    subject = new Subject(subjectID, glasses, hairOcclusion);
 
     // Store Subject Info in Database
     let newSubject = new subjectDataModel({subjectID: subjectID});
     newSubject.save()
     .then(() => res.json('Subject added!'))
     .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/capture').get((req, res) => {
+    let modality = currentCategory[0];
+    let category = currentCategory[1];
+    
+    if(imageNumber >= 5 && modality < categories.length - 1){
+        // Update Category
+        imageNumber = 0;
+        if(category < categories[modality].length - 1){
+            // Same Modality, Next Category
+            currentCategory = [modality, category + 1];
+        } else {
+            // Next Modality
+            currentCategory = [modality + 1, 0];
+        }
+    }
+    imageNumber += 1;
+    currentFilename = categories[currentCategory[0]][currentCategory[1]].join('-') + '-' + imageNumber;
+    
+    res.send(currentFilename);
+    // Capture Image for same Category for Image 0
+    
+    // Execute exe to Save Image for Category
+
+    // Get Current Category
 });
 
 
