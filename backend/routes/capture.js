@@ -179,7 +179,7 @@ function getCurrentFileName(){
     imageNumber += 1;
     currentFileName = `subject${subject.id}_${categories[currentCategory[0]][currentCategory[1]].join('_')}_${imageNumber}`;
 
-    currentFilePath = `subject${subject.id}/${categories[currentCategory[0]][currentCategory[1]].join('/')}`;
+    currentFilePath = `C:\\Users/Kshitij/AppData/Roaming/Slightech/MYNTEYED/SDK/1.8.0/projects/3d-biometric-authentication/backend/dataset/subject${subject.id}/${categories[currentCategory[0]][currentCategory[1]].join('/')}`;
     
     return [currentFilePath, currentFileName];
         
