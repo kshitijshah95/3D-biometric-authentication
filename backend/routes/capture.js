@@ -3,6 +3,7 @@ const fs = require('fs');
 const { resolve } = require('path');
 const { callbackify } = require('util');
 const subjectDataModel = require('../models/subject.model');
+const child = require('child_process').execFile;
 
 const categories = [
     [
@@ -173,7 +174,7 @@ function getCurrentFileName(){
         }
     }
     else if(imageNumber >= 5 && modality == categories.length - 1){
-        return "Completed";
+        return ["Completed", "Completed"];
     }
     
     imageNumber += 1;
@@ -181,8 +182,7 @@ function getCurrentFileName(){
 
     currentFilePath = `C:\\Users/Kshitij/AppData/Roaming/Slightech/MYNTEYED/SDK/1.8.0/projects/3d-biometric-authentication/backend/dataset/subject${subject.id}/${categories[currentCategory[0]][currentCategory[1]].join('/')}`;
     
-    return [currentFilePath, currentFileName];
-        
+    return [currentFilePath, currentFileName];       
 }
 
 function saveToJSON(filePath, fileName){
@@ -190,8 +190,8 @@ function saveToJSON(filePath, fileName){
         filePath: filePath,
         fileName: fileName
     });
-
-    fs.writeFile('mynteyed_demo/mynteyed_demo/image-data.json', paths, (err) => {
+    console.log("Yoo");
+    fs.writeFileSync('./mynteyed_demo/mynteyed_demo/image-data.json', paths, (err) => {
         if (err) throw err;
         console.log('Data written to file');
     });
@@ -202,18 +202,21 @@ router.route('/capture').get((req, res) => {
     let [filePath, fileName] = getCurrentFileName();
     // let filePath = getCurrentFilePath();
     
-    if(res === "Completed"){
-        res.send(fileName);
+    if(filePath === "Completed"){
+        res.send("Completed");
     }
     else{
-        res.send(fileName);
-
         // Store FileName in JSON
         saveToJSON(filePath, fileName)
 
         // Execute exe
+        child('./mynteyed_demo/x64/Release/mynteyed_demo.exe', function(err, data) {
+            console.log(err)
+            console.log(data.toString());
+          });
     }
 
+    res.send(fileName);
 });
 
 
