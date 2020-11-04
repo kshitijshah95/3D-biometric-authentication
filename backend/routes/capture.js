@@ -85,7 +85,7 @@ class Subject{
             for(let category of categories[i]){
                 if(category[3] == 'hair' && !this.hairOcclusion) continue;
                 let path = category.join('/');
-                var dir = `./dataset/subject-${this.id}/${path}`;
+                var dir = `./dataset/subject${this.id}/${path}`;
                 // Create Folder Structure
                 fs.mkdir(dir, {recursive:true}, (err)=>{
                     if (err) console.log(`Error creating directory: ${err}`)
@@ -128,7 +128,7 @@ router.route('/start').get((req, res) => {
         if(err) res.send("Error is " + err);
         else {
             let subjectID = Number(subject[0].subjectID) + 1;
-            res.send("ID is " + subjectID);
+            res.send(subjectID);
         };
     });
 });
@@ -180,7 +180,7 @@ function getCurrentFileName(){
     imageNumber += 1;
     currentFileName = `subject${subject.id}_${categories[currentCategory[0]][currentCategory[1]].join('_')}_${imageNumber}`;
 
-    currentFilePath = `C:\\Users/Kshitij/AppData/Roaming/Slightech/MYNTEYED/SDK/1.8.0/projects/3d-biometric-authentication/backend/dataset/subject${subject.id}/${categories[currentCategory[0]][currentCategory[1]].join('/')}`;
+    currentFilePath = `C://Users/Kshitij/AppData/Roaming/Slightech/MYNTEYED/SDK/1.8.0/projects/3d-biometric-authentication/backend/dataset/subject${subject.id}/${categories[currentCategory[0]][currentCategory[1]].join('/')}/`;
     
     return [currentFilePath, currentFileName];       
 }
@@ -210,7 +210,7 @@ router.route('/capture').get((req, res) => {
         saveToJSON(filePath, fileName)
 
         // Execute exe
-        child('./mynteyed_demo/x64/Release/mynteyed_demo.exe', function(err, data) {
+        child('C:/Users/Kshitij/AppData/Roaming/Slightech/MYNTEYED/SDK/1.8.0/projects/3d-biometric-authentication/backend/mynteyed_demo/x64/Release/mynteyed_demo.exe', function(err, data) {
             console.log(err)
             console.log(data.toString());
           });
