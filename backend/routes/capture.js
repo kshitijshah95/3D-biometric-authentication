@@ -128,16 +128,15 @@ router.route('/start').get((req, res) => {
         if(err) res.send("Error is " + err);
         else {
             let subjectID = Number(subject[0].subjectID) + 1;
-            res.send(subjectID);
+            res.send({subjectID: subjectID});
         };
     });
 });
 
-
 // Create New Subject, Create Folder Structure and Store in Database
 router.route('/start').post((req, res) => {
     // Retrieve last glasses and False from the UI
-    let subjectID = req.body.id;
+    let subjectID = req.body.subjectID;
     let glasses = req.body.glasses;
     let hairOcclusion = req.body.hairOcclusion;
     
@@ -148,7 +147,7 @@ router.route('/start').post((req, res) => {
     let newSubject = new subjectDataModel({subjectID: subjectID});
     newSubject.save()
     .then(() => res.json('Subject added!'))
-    .catch(err => res.status(400).json('Error: ' + err));
+    .catch(err => res.sendStatus(400).json('Error: ' + err));
 });
 
 function getCurrentFileName(){
