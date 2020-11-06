@@ -20,8 +20,7 @@ export default class SoftBioForm extends Component {
         let res = await axios.get('http://localhost:5000/start')
         .then((res) => {
             console.log(res);
-        })
-        ;
+        });
 
         const subjectID = res.data.subjectID;
 
