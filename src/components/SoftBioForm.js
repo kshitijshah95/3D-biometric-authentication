@@ -1,5 +1,6 @@
 import React, { useState, Component } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default class SoftBioForm extends Component {
@@ -18,7 +19,11 @@ export default class SoftBioForm extends Component {
         const [glasses, hairOcclusion, gender, age, height, weight, ethnicity, skinColor, eyeColor, dyedHairColor, beard, mustache] = [...formData];
 
         // 3. Retrieve the Subject ID from GET /start
+<<<<<<< HEAD
         let res = await axios.get('http://localhost:5000/start');
+=======
+        let res = await axios.get('http://localhost:5000/start')
+>>>>>>> fdb41260395a650f0f0eecfc0d559ac17555ad65
 
         const subjectID = res.data.subjectID;
 
@@ -26,8 +31,8 @@ export default class SoftBioForm extends Component {
         
         let data = {
             subjectID: subjectID, 
-            glasses: glasses.value, 
-            hairOcclusion: hairOcclusion.value, 
+            glasses: false, 
+            hairOcclusion: false, 
             gender: gender.value, 
             age: age.value,
         };
@@ -113,8 +118,7 @@ export default class SoftBioForm extends Component {
                         <input type="radio" name="mustache" value="Yes"/>Yes<br/>
                         <input type="radio" name="mustache" value="No"/>No
                     </label><br/>
-
-                    <button type="submit">Submit</button>
+                    <Link to="/capture" type="submit">Submit</Link>
                 </form>
             </>
         )
