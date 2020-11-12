@@ -140,6 +140,8 @@ router.route('/start').post((req, res) => {
     let glasses = req.body.glasses;
     let hairOcclusion = req.body.hairOcclusion;
     
+    console.log("res = " + glasses);
+    
     // Create new Subject, Create Folder Structure 
     subject = new Subject(subjectID, glasses, hairOcclusion);
 
