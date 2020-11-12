@@ -10,6 +10,7 @@ export default class SoftBioForm extends Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
+
         console.log("clicked!!");
         // 1. Collect All Data
         const formData = e.target;
@@ -17,10 +18,7 @@ export default class SoftBioForm extends Component {
         const [glasses, hairOcclusion, gender, age, height, weight, ethnicity, skinColor, eyeColor, dyedHairColor, beard, mustache] = [...formData];
 
         // 3. Retrieve the Subject ID from GET /start
-        let res = await axios.get('http://localhost:5000/start')
-        .then((res) => {
-            console.log(res);
-        });
+        let res = await axios.get('http://localhost:5000/start');
 
         const subjectID = res.data.subjectID;
 
