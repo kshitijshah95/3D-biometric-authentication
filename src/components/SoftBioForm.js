@@ -19,11 +19,7 @@ export default class SoftBioForm extends Component {
         const [glasses, hairOcclusion, gender, age, height, weight, ethnicity, skinColor, eyeColor, dyedHairColor, beard, mustache] = [...formData];
 
         // 3. Retrieve the Subject ID from GET /start
-<<<<<<< HEAD
-        let res = await axios.get('http://localhost:5000/start');
-=======
         let res = await axios.get('http://localhost:5000/start')
->>>>>>> fdb41260395a650f0f0eecfc0d559ac17555ad65
 
         const subjectID = res.data.subjectID;
 

@@ -191,7 +191,7 @@ function saveToJSON(filePath, fileName){
         filePath: filePath,
         fileName: fileName
     });
-    console.log("Yoo");
+    
     fs.writeFileSync('./mynteyed_demo/mynteyed_demo/image-data.json', paths, (err) => {
         if (err) throw err;
         console.log('Data written to file');
