@@ -1,7 +1,5 @@
 const router = require('express').Router();
 const fs = require('fs');
-const { resolve } = require('path');
-const { callbackify } = require('util');
 const subjectDataModel = require('../models/subject.model');
 const child = require('child_process').execFile;
 
@@ -140,7 +138,7 @@ router.route('/start').post((req, res) => {
     let glasses = req.body.glasses;
     let hairOcclusion = req.body.hairOcclusion;
     
-    console.log("res = " + glasses);
+    //console.log("res = " + glasses);
     
     // Create new Subject, Create Folder Structure 
     subject = new Subject(subjectID, glasses, hairOcclusion);
@@ -199,25 +197,22 @@ function saveToJSON(filePath, fileName){
 
 }
 
-router.route('/capture').get((req, res) => {
+router.route('/capture').get(async (req, res) => {
     let [filePath, fileName] = getCurrentFileName();
     // let filePath = getCurrentFilePath();
     
     if(filePath === "Completed"){
         res.send("Completed");
     }
-    else{
-        // Store FileName in JSON
-        saveToJSON(filePath, fileName)
+    // Store FileName in JSON
+    saveToJSON(filePath, fileName)
 
-        // Execute exe
-        child('C:/Users/Kshitij/AppData/Roaming/Slightech/MYNTEYED/SDK/1.8.0/projects/3d-biometric-authentication/backend/mynteyed_demo/x64/Release/mynteyed_demo.exe', function(err, data) {
-            console.log(err)
-            console.log(data.toString());
-          });
-    }
-
-    res.send(fileName);
+    // Execute exe
+    await child('C:/Users/Kshitij/AppData/Roaming/Slightech/MYNTEYED/SDK/1.8.0/projects/3d-biometric-authentication/backend/mynteyed_demo/x64/Release/mynteyed_demo.exe', function(err, data) {
+        console.log(err)
+        console.log(data.toString());
+        res.send({fileName});
+        });
 });
 
 

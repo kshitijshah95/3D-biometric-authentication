@@ -1,6 +1,6 @@
 import React, { useState, Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default class SoftBioForm extends Component {
@@ -9,10 +9,24 @@ export default class SoftBioForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+
+    state = {
+        redirect: false
+    }
+    setRedirect = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            return <Redirect to='/capture' />
+        }
+    }
+
     handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("clicked!!");
         // 1. Collect All Data
         const formData = e.target;
         
@@ -38,11 +52,15 @@ export default class SoftBioForm extends Component {
         .then(function (response) {
             console.log(response);
           });
+
+        this.setRedirect();
+
     }
     
     render(){
         return (
             <>
+                {this.renderRedirect()}
                 <h2>Soft Biometrics</h2>
                 <form onSubmit={this.handleSubmit}>
                     <label><b>Glasses</b><br/>
@@ -114,7 +132,7 @@ export default class SoftBioForm extends Component {
                         <input type="radio" name="mustache" value="Yes"/>Yes<br/>
                         <input type="radio" name="mustache" value="No"/>No
                     </label><br/>
-                    <Link to="/capture" type="submit">Submit</Link>
+                    <button type="submit">Submit</button>
                 </form>
             </>
         )

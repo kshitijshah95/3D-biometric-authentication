@@ -3,14 +3,17 @@ import axios from 'axios';
 
 export default class CaptureScreens extends Component {
     handleCapture = async (e) => {
-        const res = await axios.get('http://locahost:5000/capture');
-        console.log(res);
+        const captureBtn = document.getElementById('captureBtn');
+        captureBtn.disabled = true;
+        let res = await axios.get('http://localhost:5000/capture');
+        console.log(res.data);
+        captureBtn.disabled = false;
 
     }
     render(){
         return (
             <>
-                <button onClick={this.handleCapture}>Capture</button>
+                <button onClick={this.handleCapture} id="captureBtn">Capture</button>
             </>
         )
     }
