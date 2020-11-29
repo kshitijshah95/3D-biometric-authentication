@@ -1,7 +1,10 @@
 const router = require('express').Router();
 const fs = require('fs');
+const path = require('path');
 const subjectDataModel = require('../models/subject.model');
 const child = require('child_process').execFile;
+const fastcsv = require('fast-csv');
+
 
 const categories = [
     [
@@ -77,7 +80,7 @@ class Subject{
         this.createFolderStructure();
     }
 
-    createFolderStructure = () => {
+    createFolderStructure = async () => {
         for(let i = 0; i < categories.length; i++){
             if(i === 1 && !this.glasses) continue;
             for(let category of categories[i]){
@@ -85,12 +88,29 @@ class Subject{
                 let path = category.join('/');
                 var dir = `./dataset/subject${this.id}/${path}`;
                 // Create Folder Structure
-                fs.mkdir(dir, {recursive:true}, (err)=>{
+                await fs.mkdir(dir, {recursive:true}, (err)=>{
                     if (err) console.log(`Error creating directory: ${err}`)
                   })
             }
         }
+        await fs.mkdir(`./dataset/subject${this.id}/soft`, {recursive:true}, (err)=>{
+            if (err) console.log(`Error creating directory: ${err}`)
+          })
+        
+        fs.writeFile(`../dataset/subject${this.id}/soft/soft.csv`, "","UTF8"); 
     }
+
+
+    storeSoftFile = () => {
+        let headings = 'gender,age,height,ethnicity,skincolor,eyecolor,haircolor,dyedhaircolor,beard,moustache';
+        
+        // Save into csv File
+        // const ws = fs.createWriteStream(`./dataset/subject${this.id}/soft/soft.csv`);
+
+        
+    }
+
+    
 
     captureImage = () => {
         for(let i = 0; i < categories.length; i++){
@@ -103,7 +123,7 @@ class Subject{
                 // Create Folder Structure
                 fs.mkdir(dir, {recursive:true}, (err)=>{
                     if (err) console.log(`Error creating directory: ${err}`)
-                  })
+                })
             }
         }
     }
@@ -132,22 +152,23 @@ router.route('/start').get((req, res) => {
 });
 
 // Create New Subject, Create Folder Structure and Store in Database
-router.route('/start').post((req, res) => {
+router.route('/start').post(async (req, res) => {
     // Retrieve last glasses and False from the UI
     let subjectID = req.body.subjectID;
     let glasses = req.body.glasses;
     let hairOcclusion = req.body.hairOcclusion;
-    
-    //console.log("res = " + glasses);
-    
+  
     // Create new Subject, Create Folder Structure 
-    subject = new Subject(subjectID, glasses, hairOcclusion);
-
+    subject = await new Subject(subjectID, glasses, hairOcclusion);
+    
     // Store Subject Info in Database
-    let newSubject = new subjectDataModel({subjectID: subjectID});
+    let newSubject = await new subjectDataModel({subjectID: subjectID});
     newSubject.save()
     .then(() => res.json('Subject added!'))
     .catch(err => res.sendStatus(400).json('Error: ' + err));
+    
+    // Store softBiometric data values in csv file in soft folder 
+    // subject.storeSoftFile(req.body.content);
 });
 
 function getCurrentFileName(){

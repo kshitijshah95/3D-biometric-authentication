@@ -24,13 +24,31 @@ export default class SoftBioForm extends Component {
         }
     }
 
+    displayRadioValue = (element) => { 
+        var ele = document.getElementsByName(element); 
+          
+        for(let i = 0; i < ele.length; i++) { 
+            if(ele[i].checked) 
+                return ele[i].value;
+        } 
+    } 
+
     handleSubmit = async (e) => {
         e.preventDefault();
 
         // 1. Collect All Data
-        const formData = e.target;
-        
-        const [glasses, hairOcclusion, gender, age, height, weight, ethnicity, skinColor, eyeColor, dyedHairColor, beard, mustache] = [...formData];
+        const genderValue = this.displayRadioValue('gender');
+        const glassesValue = this.displayRadioValue('glasses');
+        const hairOcclusionsValue = this.displayRadioValue('hairOcclusions');
+        const ageValue = document.getElementsByName('age').value;
+        const heightValue = document.getElementsByName('height').value;
+        const ethnicityValue = document.getElementsByName('ethnicity').value;
+        const skinColorValue = document.getElementsByName('skinColor').value;
+        const eyeColorValue = document.getElementsByName('eyeColor').value;
+        const hairColorValue = document.getElementsByName('hairColor').value;
+        const dyedHairColorValue = document.getElementsByName('dyedHairColor').value;
+        const beardValue = this.displayRadioValue('beard');
+        const mustacheValue = this.displayRadioValue('mustache');
 
         // 3. Retrieve the Subject ID from GET /start
         let res = await axios.get('http://localhost:5000/start')
@@ -38,13 +56,23 @@ export default class SoftBioForm extends Component {
         const subjectID = res.data.subjectID;
 
         console.log("ID = " + subjectID);
-        
-        let data = {
+
+        const data = {
             subjectID: subjectID, 
-            glasses: false, 
-            hairOcclusion: false, 
-            gender: gender.value, 
-            age: age.value,
+            glasses: glassesValue, 
+            hairOcclusion: hairOcclusionsValue, 
+            content: [{
+                gender: genderValue,
+                age: ageValue,
+                height: heightValue,
+                ethnicity: ethnicityValue,
+                skinColor: skinColorValue,
+                eyeColor: eyeColorValue,
+                hairColor: hairColorValue,
+                dyedHairColor: dyedHairColorValue,
+                beard: beardValue,
+                mustache: mustacheValue
+            }]
         };
 
         // 4. Send Data to the backend through POST /start with subjectID
@@ -93,10 +121,7 @@ export default class SoftBioForm extends Component {
 
                     {/* Ethnicity */}
                     <label><b>Ethnicity</b><br/>
-                        <input type="checkbox" name="ethnicity" value="asian"/>Asian<br/>
-                        <input type="checkbox" name="ethnicity" value="irish"/>Irish<br/>
-                        <input type="checkbox" name="ethnicity" value="chineese"/>Chineese<br/>
-                        <input type="checkbox" name="ethnicity" value="indian"/>Indian<br/>
+                        <input type="text" name="ethnicity"/>
                     </label><br/>
                       
                     {/* Skin Color */}
@@ -106,7 +131,7 @@ export default class SoftBioForm extends Component {
                     {/* Eye Color */}
                     <label>
                     <b>Eye Color</b><br/>
-                    <input type="text" name="eyeColor"/>
+                        <input type="text" name="eyeColor"/>
                     </label><br/>
 
                     {/* Hair Color */}
