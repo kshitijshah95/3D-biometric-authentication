@@ -1,6 +1,6 @@
-import React, { useState, Component } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default class SoftBioForm extends Component {
@@ -8,7 +8,6 @@ export default class SoftBioForm extends Component {
         super();
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
 
     state = {
         redirect: false
@@ -40,13 +39,13 @@ export default class SoftBioForm extends Component {
         const genderValue = this.displayRadioValue('gender');
         const glassesValue = this.displayRadioValue('glasses');
         const hairOcclusionsValue = this.displayRadioValue('hairOcclusions');
-        const ageValue = document.getElementsByName('age').value;
-        const heightValue = document.getElementsByName('height').value;
-        const ethnicityValue = document.getElementsByName('ethnicity').value;
-        const skinColorValue = document.getElementsByName('skinColor').value;
-        const eyeColorValue = document.getElementsByName('eyeColor').value;
-        const hairColorValue = document.getElementsByName('hairColor').value;
-        const dyedHairColorValue = document.getElementsByName('dyedHairColor').value;
+        const ageValue = document.getElementById('age').value;
+        const heightValue = document.getElementById('height').value;
+        const ethnicityValue = document.getElementById('ethnicity').value;
+        const skinColorValue = document.getElementById('skinColor').value;
+        const eyeColorValue = document.getElementById('eyeColor').value;
+        const hairColorValue = document.getElementById('hairColor').value;
+        const dyedHairColorValue = document.getElementById('dyedHairColor').value;
         const beardValue = this.displayRadioValue('beard');
         const mustacheValue = this.displayRadioValue('mustache');
 
@@ -61,18 +60,18 @@ export default class SoftBioForm extends Component {
             subjectID: subjectID, 
             glasses: glassesValue, 
             hairOcclusion: hairOcclusionsValue, 
-            content: [{
-                gender: genderValue,
-                age: ageValue,
-                height: heightValue,
-                ethnicity: ethnicityValue,
-                skinColor: skinColorValue,
-                eyeColor: eyeColorValue,
-                hairColor: hairColorValue,
-                dyedHairColor: dyedHairColorValue,
-                beard: beardValue,
-                mustache: mustacheValue
-            }]
+            content: [
+                genderValue,
+                ageValue,
+                heightValue,
+                ethnicityValue,
+                skinColorValue,
+                eyeColorValue,
+                hairColorValue,
+                dyedHairColorValue,
+                beardValue,
+                mustacheValue
+            ]
         };
 
         // 4. Send Data to the backend through POST /start with subjectID
@@ -110,39 +109,39 @@ export default class SoftBioForm extends Component {
 
                     {/* Age */}
                     <label><b>Age</b><br/>
-                        <input type="number" name="age" min='18' max='80'/>
+                        <input type="number" id="age" min='18' max='80'/>
                     </label><br/>
 
 
                     {/* Height */}
                     <label><b>Height</b><br/>
-                        <input type="number" name="height" min='4' max='7' step="0.1"/>
+                        <input type="number" id="height" min='4' max='7' step="0.1" />
                     </label><br/>
 
                     {/* Ethnicity */}
                     <label><b>Ethnicity</b><br/>
-                        <input type="text" name="ethnicity"/>
+                        <input type="text" id="ethnicity" />
                     </label><br/>
                       
                     {/* Skin Color */}
                     <b><label>Skin Color</label></b><br/>
-                    <input type="text" name="skinColor"/><br/>
+                    <input type="text" id="skinColor" /><br/>
                     
                     {/* Eye Color */}
                     <label>
                     <b>Eye Color</b><br/>
-                        <input type="text" name="eyeColor"/>
+                        <input type="text" id="eyeColor" />
                     </label><br/>
 
                     {/* Hair Color */}
                     <label>
                     <b>Hair Color</b><br/>
-                    <input type="text" name="hairColor"/>
+                    <input type="text" id="hairColor" />
                     </label><br/>
 
                     {/* DyedHairColor Color */}
                     <label><b>Dyed Hair Color</b><br/>
-                        <input type="text" name="dyedHairColor"/>
+                        <input type="text" id="dyedHairColor" />
                     </label><br/>
 
 

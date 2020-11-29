@@ -80,7 +80,7 @@ class Subject{
         this.createFolderStructure();
     }
 
-    createFolderStructure = async () => {
+    createFolderStructure = () => {
         for(let i = 0; i < categories.length; i++){
             if(i === 1 && !this.glasses) continue;
             for(let category of categories[i]){
@@ -88,25 +88,22 @@ class Subject{
                 let path = category.join('/');
                 var dir = `./dataset/subject${this.id}/${path}`;
                 // Create Folder Structure
-                await fs.mkdir(dir, {recursive:true}, (err)=>{
-                    if (err) console.log(`Error creating directory: ${err}`)
-                  })
+                fs.mkdirSync(dir, {recursive:true})
             }
         }
-        await fs.mkdir(`./dataset/subject${this.id}/soft`, {recursive:true}, (err)=>{
-            if (err) console.log(`Error creating directory: ${err}`)
-          })
-        
-        fs.writeFile(`../dataset/subject${this.id}/soft/soft.csv`, "","UTF8"); 
+        fs.mkdirSync(`./dataset/subject${this.id}/soft`, {recursive:true}); 
     }
 
 
-    storeSoftFile = () => {
+    storeSoftFile = (reqBody) => {
         let headings = 'gender,age,height,ethnicity,skincolor,eyecolor,haircolor,dyedhaircolor,beard,moustache';
         
         // Save into csv File
         // const ws = fs.createWriteStream(`./dataset/subject${this.id}/soft/soft.csv`);
 
+        let data = headings + '\n' + reqBody.join(',');
+
+        fs.writeFileSync(`./dataset/subject${this.id}/soft/soft.csv`, data);
         
     }
 
@@ -157,7 +154,8 @@ router.route('/start').post(async (req, res) => {
     let subjectID = req.body.subjectID;
     let glasses = req.body.glasses;
     let hairOcclusion = req.body.hairOcclusion;
-  
+    let softBioContent = req.body.content;
+
     // Create new Subject, Create Folder Structure 
     subject = await new Subject(subjectID, glasses, hairOcclusion);
     
@@ -168,7 +166,7 @@ router.route('/start').post(async (req, res) => {
     .catch(err => res.sendStatus(400).json('Error: ' + err));
     
     // Store softBiometric data values in csv file in soft folder 
-    // subject.storeSoftFile(req.body.content);
+    subject.storeSoftFile(softBioContent);
 });
 
 function getCurrentFileName(){
