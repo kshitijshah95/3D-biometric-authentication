@@ -3,8 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const subjectDataModel = require('../models/subject.model');
 const child = require('child_process').execFile;
-const fastcsv = require('fast-csv');
-
+// const fastcsv = require('fast-csv');
 
 const categories = [
     [
@@ -79,7 +78,7 @@ class Subject{
         this.hairOcclusion = hairOcclusion;
         this.createFolderStructure();
     }
-
+    
     createFolderStructure = () => {
         for(let i = 0; i < categories.length; i++){
             if(i === 1 && !this.glasses) continue;
